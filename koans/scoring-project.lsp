@@ -50,8 +50,18 @@
 ; Your goal is to write the score method.
 
 (defun score (dice)
-  ; You need to write this method
-)
+  (flet ((number-score (number count)
+           (case number
+             (1 (+ (* (floor count 3) 1000) (* (mod count 3) 100)))
+             (5 (+ (* (floor count 3) 500) (* (mod count 3) 50)))
+             (otherwise (* (floor count 3) number 100)))))
+    (let ((counts (make-array 6 :initial-element 0)))
+      (dolist (die dice)
+        (incf (aref counts (- die 1))))
+      (loop for count across counts
+            for i from 1 to 6
+            sum (number-score i count)))))
+
 
 (define-test test-score-of-an-empty-list-is-zero
     (assert-equal 0 (score nil)))
